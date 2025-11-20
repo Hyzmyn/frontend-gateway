@@ -1,50 +1,50 @@
 .home {
-  text-align: center;
+    text-align: left;
 }
 
 .hero {
-  padding: 3rem 0;
+    padding: 3rem 0;
+    display: grid;
+    gap: 1.25rem;
 }
 
 .hero h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #282c34;
+    font-size: 2.4rem;
+    margin: 0;
+    color: var(--md-on-surface);
+    letter-spacing: -0.01em;
 }
 
 .hero p {
-  font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 3rem;
+    font-size: 1.15rem;
+    color: var(--md-muted);
+    margin: 0;
 }
 
 .features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
 }
 
 .feature-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s;
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: var(--md-surface);
+    padding: 1.75rem;
+    border-radius: var(--md-radius);
+    border: 1px solid var(--md-outline-variant);
+    display: grid;
+    gap: 0.5rem;
 }
 
 .feature-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #282c34;
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--md-on-surface);
 }
 
 .feature-card p {
-  color: #666;
-  font-size: 1rem;
+    color: var(--md-muted);
+    font-size: 1rem;
+    margin: 0;
 }

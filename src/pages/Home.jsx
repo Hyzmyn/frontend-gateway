@@ -1,10 +1,10 @@
-import './Home.css';
+import "./Home.css";
 
 const Home = () => {
   return (
     <div className="home">
       <div className="hero">
-        <h1>Welcome to Frontend Gateway</h1>
+        <h1>Welcome to SWD</h1>
         <p>A React.js base project for microservice architecture</p>
         <div className="features">
           <div className="feature-card">

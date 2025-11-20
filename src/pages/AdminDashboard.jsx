@@ -1,10 +1,21 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { adminDashboardService } from '../services';
-import { Button, Loading } from '../components/common';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import toast from 'react-hot-toast';
-import './AdminDashboard.css';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { adminDashboardService } from "../services";
+import { Button, Loading } from "../components/common";
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import toast from "react-hot-toast";
+import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -15,13 +26,13 @@ const AdminDashboard = () => {
   const [examinerProgressData, setExaminerProgressData] = useState([]);
 
   useEffect(() => {
-    const userStr = localStorage.getItem('user');
+    const userStr = localStorage.getItem("user");
     const user = userStr ? JSON.parse(userStr) : null;
-    
+
     // Check if user is admin
-    if (!user || user.role !== 'Admin') {
-      toast.error('Access denied. Admin only.');
-      navigate('/');
+    if (!user || user.role !== "Admin") {
+      toast.error("Access denied. Admin only.");
+      navigate("/");
       return;
     }
 
@@ -35,15 +46,15 @@ const AdminDashboard = () => {
       const [kpis, auditLog, examinerProgress] = await Promise.all([
         adminDashboardService.getKPIs(),
         adminDashboardService.getAuditLog(0, 10),
-        adminDashboardService.getExaminerProgress()
+        adminDashboardService.getExaminerProgress(),
       ]);
 
       setKpiData(kpis);
       setAuditLogData(auditLog);
       setExaminerProgressData(examinerProgress);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-      toast.error('Failed to load dashboard data');
+      console.error("Error fetching dashboard data:", error);
+      toast.error("Failed to load dashboard data");
     } finally {
       setLoading(false);
     }
@@ -53,10 +64,10 @@ const AdminDashboard = () => {
     setExporting(true);
     try {
       await adminDashboardService.exportReport();
-      toast.success('Report exported successfully!');
+      toast.success("Report exported successfully!");
     } catch (error) {
-      console.error('Export error:', error);
-      toast.error('Failed to export report');
+      console.error("Export error:", error);
+      toast.error("Failed to export report");
     } finally {
       setExporting(false);
     }
@@ -67,24 +78,21 @@ const AdminDashboard = () => {
   }
 
   // Transform KPI data for weekly chart
-  const weeklyChartData = kpiData?.weeks?.map(week => ({
-    week: week.weekStart,
-    total: week.total,
-    graded: week.graded,
-    flagged: week.flagged,
-    avgScore: week.averageScore
-  })) || [];
+  const weeklyChartData =
+    kpiData?.weeks?.map((week) => ({
+      week: week.weekStart,
+      total: week.total,
+      graded: week.graded,
+      flagged: week.flagged,
+      avgScore: week.averageScore,
+    })) || [];
 
   return (
     <div className="admin-dashboard">
       <div className="dashboard-header">
         <h1>Admin Dashboard</h1>
-        <Button 
-          variant="primary" 
-          onClick={handleExport}
-          disabled={exporting}
-        >
-          {exporting ? 'Exporting...' : '📊 Export Report'}
+        <Button variant="primary" onClick={handleExport} disabled={exporting}>
+          {exporting ? "Exporting..." : "📊 Export Report"}
         </Button>
       </div>
 
@@ -125,9 +133,9 @@ const AdminDashboard = () => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="total" fill="#61dafb" name="Total" />
-              <Bar dataKey="graded" fill="#28a745" name="Graded" />
-              <Bar dataKey="flagged" fill="#ffc107" name="Flagged" />
+              <Bar dataKey="total" fill="#2f2f2f" name="Total" />
+              <Bar dataKey="graded" fill="#5a5a5a" name="Graded" />
+              <Bar dataKey="flagged" fill="#8a8a8a" name="Flagged" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -144,7 +152,13 @@ const AdminDashboard = () => {
               <YAxis domain={[0, 100]} />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="avgScore" stroke="#61dafb" strokeWidth={2} name="Average Score" />
+              <Line
+                type="monotone"
+                dataKey="avgScore"
+                stroke="#2f2f2f"
+                strokeWidth={2}
+                name="Average Score"
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -161,8 +175,8 @@ const AdminDashboard = () => {
               <YAxis dataKey="examiner" type="category" width={100} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="total" fill="#61dafb" name="Assigned" />
-              <Bar dataKey="graded" fill="#28a745" name="Completed" />
+              <Bar dataKey="total" fill="#2f2f2f" name="Assigned" />
+              <Bar dataKey="graded" fill="#5a5a5a" name="Completed" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -190,12 +204,16 @@ const AdminDashboard = () => {
                   <td>{log.examCode}</td>
                   <td>{log.studentCode}</td>
                   <td>
-                    <span className={`status-badge status-${log.status.toLowerCase()}`}>
+                    <span
+                      className={`status-badge status-${log.status.toLowerCase()}`}
+                    >
                       {log.status}
                     </span>
                   </td>
-                  <td>{log.score || '-'}</td>
-                  <td>{new Date(log.lastUpdatedUtc).toLocaleString('vi-VN')}</td>
+                  <td>{log.score || "-"}</td>
+                  <td>
+                    {new Date(log.lastUpdatedUtc).toLocaleString("vi-VN")}
+                  </td>
                 </tr>
               ))}
             </tbody>
