@@ -26,6 +26,13 @@ const ExaminerManage = () => {
   const [showMaterialsModal, setShowMaterialsModal] = useState(false);
   const [examMaterials, setExamMaterials] = useState([]);
   const [loadingMaterials, setLoadingMaterials] = useState(false);
+  const [showGradeModal, setShowGradeModal] = useState(false);
+  const [selectedSubmissionForGrade, setSelectedSubmissionForGrade] = useState(null);
+  const [gradeForm, setGradeForm] = useState({
+    score: '',
+    gradedBy: '',
+    notes: ''
+  });
 
   useEffect(() => {
     const userStr = localStorage.getItem('user');
@@ -317,6 +324,69 @@ const ExaminerManage = () => {
   const closeMaterialsModal = () => {
     setShowMaterialsModal(false);
     setExamMaterials([]);
+  };
+
+  const handleOpenGradeModal = (submission) => {
+    setSelectedSubmissionForGrade(submission);
+    setGradeForm({
+      score: submission.score || '',
+      gradedBy: userEmail || '',
+      notes: ''
+    });
+    setShowGradeModal(true);
+  };
+
+  const closeGradeModal = () => {
+    setShowGradeModal(false);
+    setSelectedSubmissionForGrade(null);
+    setGradeForm({
+      score: '',
+      gradedBy: '',
+      notes: ''
+    });
+  };
+
+  const handleSubmitGrade = async (e) => {
+    e.preventDefault();
+    
+    if (!selectedSubmissionForGrade) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      toast.loading('Submitting grade...', { id: 'submit-grade' });
+      
+      const payload = {
+        score: parseFloat(gradeForm.score),
+        gradedBy: gradeForm.gradedBy,
+        notes: gradeForm.notes || null
+      };
+      
+      await axios.post(
+        `${SUBMISSIONS_API_URL}/submissions/${selectedSubmissionForGrade.id}/grade-moderation`,
+        payload,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      toast.success('Grade submitted successfully!', { id: 'submit-grade' });
+      closeGradeModal();
+      
+      // Refresh submissions if modal is open
+      if (showSubmissionModal && selectedExam) {
+        const currentAssignment = assignments.find(a => a.examId === selectedExam.id);
+        if (currentAssignment) {
+          handleViewAssignment(currentAssignment);
+        }
+      }
+    } catch (error) {
+      console.error('Error submitting grade:', error);
+      const errorMessage = error.response?.data?.message || 'Failed to submit grade';
+      toast.error(errorMessage, { id: 'submit-grade' });
+    }
   };
 
   const getStatusBadge = (assignment) => {
@@ -633,6 +703,13 @@ const ExaminerManage = () => {
                                 </td>
                                 <td>
                                   <div className="action-buttons">
+                                    <button 
+                                      className="btn-icon btn-grade-action" 
+                                      onClick={() => handleOpenGradeModal(submission)}
+                                      title="Grade Submission"
+                                    >
+                                      ✍️
+                                    </button>
                                     {submission.artifacts && submission.artifacts.length > 0 ? (
                                       <>
                                         <button 
@@ -795,6 +872,93 @@ const ExaminerManage = () => {
                 )}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Grade Modal */}
+      {showGradeModal && selectedSubmissionForGrade && (
+        <div className="modal-overlay" onClick={closeGradeModal}>
+          <div className="modal-content modal-small" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>✍️ Grade Submission</h2>
+              <button className="modal-close" onClick={closeGradeModal}>✕</button>
+            </div>
+            
+            <div className="grade-modal-body">
+              <div className="submission-info-box">
+                <h3>📄 Submission Details</h3>
+                <div className="info-row">
+                  <span className="info-label">Student:</span>
+                  <span className="info-value">{selectedSubmissionForGrade.studentCode}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Attempt:</span>
+                  <span className="info-value">{selectedSubmissionForGrade.attempt}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Status:</span>
+                  <span className={`status-badge ${getStatusClass(selectedSubmissionForGrade.status)}`}>
+                    {getStatusLabel(selectedSubmissionForGrade.status)}
+                  </span>
+                </div>
+                {selectedSubmissionForGrade.score !== null && selectedSubmissionForGrade.score !== undefined && (
+                  <div className="info-row">
+                    <span className="info-label">Current Score:</span>
+                    <span className="info-value score">{selectedSubmissionForGrade.score}</span>
+                  </div>
+                )}
+              </div>
+
+              <form onSubmit={handleSubmitGrade} className="grade-form">
+                <div className="form-group">
+                  <label htmlFor="score">Score *</label>
+                  <input
+                    type="number"
+                    id="score"
+                    value={gradeForm.score}
+                    onChange={(e) => setGradeForm({ ...gradeForm, score: e.target.value })}
+                    required
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    placeholder="Enter score (0-100)"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="gradedBy">Graded By *</label>
+                  <input
+                    type="text"
+                    id="gradedBy"
+                    value={gradeForm.gradedBy}
+                    onChange={(e) => setGradeForm({ ...gradeForm, gradedBy: e.target.value })}
+                    required
+                    placeholder="Enter grader name/email"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="notes">Notes (Optional)</label>
+                  <textarea
+                    id="notes"
+                    value={gradeForm.notes}
+                    onChange={(e) => setGradeForm({ ...gradeForm, notes: e.target.value })}
+                    rows="4"
+                    placeholder="Enter any grading notes or comments..."
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <Button type="button" variant="secondary" onClick={closeGradeModal}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" variant="primary">
+                    Submit Grade
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

@@ -454,6 +454,10 @@
   max-width: 900px;
 }
 
+.modal-content.modal-small {
+  max-width: 600px;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -618,6 +622,11 @@
 
 .btn-icon.btn-materials {
   color: #6f42c1;
+}
+
+.btn-icon.btn-grade-action {
+  color: #fd7e14;
+  font-size: 1.4rem;
 }
 
 /* Artifacts Detail Section */
@@ -876,6 +885,100 @@
   font-size: 1rem;
 }
 
+/* Grade Modal Styles */
+.grade-modal-body {
+  padding: 1rem 0;
+}
+
+.submission-info-box {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border-left: 4px solid #fd7e14;
+}
+
+.submission-info-box h3 {
+  margin: 0 0 1rem 0;
+  color: #282c34;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row .info-label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.info-row .info-value {
+  font-size: 0.95rem;
+  color: #282c34;
+  font-weight: 600;
+}
+
+.grade-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #282c34;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #fd7e14;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.form-actions button {
+  min-width: 120px;
+}
+
 /* Modal Responsive */
 @media (max-width: 768px) {
   .modal-content {
@@ -924,5 +1027,17 @@
 
   .detail-value {
     max-width: 50%;
+  }
+
+  .grade-form {
+    gap: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
   }
 }
