@@ -23,6 +23,9 @@ const ExaminerManage = () => {
   const [selectedSubmissions, setSelectedSubmissions] = useState([]);
   const [selectedExam, setSelectedExam] = useState(null);
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
+  const [showMaterialsModal, setShowMaterialsModal] = useState(false);
+  const [examMaterials, setExamMaterials] = useState([]);
+  const [loadingMaterials, setLoadingMaterials] = useState(false);
 
   useEffect(() => {
     const userStr = localStorage.getItem('user');
@@ -236,6 +239,86 @@ const ExaminerManage = () => {
     }
   };
 
+  const handleViewMaterials = async (examId) => {
+    setLoadingMaterials(true);
+    setShowMaterialsModal(true);
+    setExamMaterials([]);
+    
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Fetch exam materials using the API
+      const response = await axios.get(
+        `${SUBMISSIONS_API_URL}/submissions/exams/${examId}/materials`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      
+      setExamMaterials(response.data || []);
+      
+      if (!response.data || response.data.length === 0) {
+        toast.info('No materials found for this exam');
+      }
+    } catch (error) {
+      console.error('Error fetching exam materials:', error);
+      toast.error('Failed to load exam materials');
+      setExamMaterials([]);
+    } finally {
+      setLoadingMaterials(false);
+    }
+  };
+
+  const handleDownloadMaterial = async (materialId, materialName) => {
+    try {
+      const token = localStorage.getItem('token');
+      toast.loading('Downloading material...', { id: 'download-material' });
+      
+      const response = await axios.get(
+        `${SUBMISSIONS_API_URL}/submissions/files/materials/${materialId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          responseType: 'blob'
+        }
+      );
+      
+      // Get filename from Content-Disposition header or use provided name
+      const contentDisposition = response.headers['content-disposition'];
+      let filename = materialName || `material_${materialId}`;
+      
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (filenameMatch && filenameMatch[1]) {
+          filename = filenameMatch[1].replace(/['"]/g, '');
+        }
+      }
+      
+      // Create blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('Material downloaded successfully!', { id: 'download-material' });
+    } catch (error) {
+      console.error('Error downloading material:', error);
+      toast.error('Failed to download material', { id: 'download-material' });
+    }
+  };
+
+  const closeMaterialsModal = () => {
+    setShowMaterialsModal(false);
+    setExamMaterials([]);
+  };
+
   const getStatusBadge = (assignment) => {
     if (assignment.isLead) {
       return <span className="status-badge lead">👑 Lead Grader</span>;
@@ -383,6 +466,13 @@ const ExaminerManage = () => {
                         title="View Submissions"
                       >
                         👁️
+                      </button>
+                      <button 
+                        className="btn-icon btn-materials" 
+                        onClick={() => handleViewMaterials(assignment.examId)}
+                        title="View Exam Materials"
+                      >
+                        📚
                       </button>
                     </div>
                   </td>
@@ -625,6 +715,85 @@ const ExaminerManage = () => {
                   )}
                 </div>
               </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Materials Modal */}
+      {showMaterialsModal && (
+        <div className="modal-overlay" onClick={closeMaterialsModal}>
+          <div className="modal-content modal-medium" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>📚 Exam Materials</h2>
+              <button className="modal-close" onClick={closeMaterialsModal}>✕</button>
+            </div>
+            
+            {loadingMaterials ? (
+              <div className="modal-loading">
+                <Loading message="Loading materials..." />
+              </div>
+            ) : (
+              <div className="materials-list">
+                {examMaterials.length > 0 ? (
+                  <div className="materials-grid">
+                    {examMaterials.map((material) => (
+                      <div key={material.id} className="material-card">
+                        <div className="material-header">
+                          <div className="material-icon">
+                            {material.materialType === 'ExamPaper' ? '📄' : 
+                             material.materialType === 'MarkingSheet' ? '📊' : 
+                             material.materialType === 'RubricSheet' ? '📋' : '📎'}
+                          </div>
+                          <div className="material-info">
+                            <h4 className="material-type">{material.materialType}</h4>
+                            {material.originalFileName && (
+                              <p className="material-filename">{material.originalFileName}</p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="material-details">
+                          {material.sizeBytes && (
+                            <div className="material-detail-item">
+                              <span className="detail-label">Size:</span>
+                              <span className="detail-value">
+                                {(material.sizeBytes / 1024).toFixed(2)} KB
+                              </span>
+                            </div>
+                          )}
+                          {material.contentType && (
+                            <div className="material-detail-item">
+                              <span className="detail-label">Type:</span>
+                              <span className="detail-value">{material.contentType}</span>
+                            </div>
+                          )}
+                          {material.path && (
+                            <div className="material-detail-item">
+                              <span className="detail-label">Path:</span>
+                              <span className="detail-value" title={material.path}>
+                                {material.path.split('/').pop()}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <button 
+                          className="btn-download-material"
+                          onClick={() => handleDownloadMaterial(material.id, material.originalFileName)}
+                          title="Download Material"
+                        >
+                          📥 Download
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="no-materials">
+                    <p>No materials available for this exam.</p>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>

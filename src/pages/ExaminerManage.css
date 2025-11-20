@@ -450,6 +450,10 @@
   max-width: 1200px;
 }
 
+.modal-content.modal-medium {
+  max-width: 900px;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -612,6 +616,10 @@
   color: #28a745;
 }
 
+.btn-icon.btn-materials {
+  color: #6f42c1;
+}
+
 /* Artifacts Detail Section */
 .artifacts-detail-section {
   margin-top: 2rem;
@@ -740,6 +748,134 @@
   transform: translateY(0);
 }
 
+/* Materials Modal Styles */
+.materials-list {
+  padding: 1rem 0;
+}
+
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.material-card {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.material-card:hover {
+  border-color: #6f42c1;
+  box-shadow: 0 4px 12px rgba(111, 66, 193, 0.15);
+  transform: translateY(-2px);
+}
+
+.material-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.material-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.material-info {
+  flex: 1;
+}
+
+.material-type {
+  margin: 0 0 0.5rem 0;
+  color: #282c34;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.material-filename {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.material-details {
+  margin-bottom: 1.5rem;
+}
+
+.material-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.material-detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 0.9rem;
+  color: #282c34;
+  font-weight: 600;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.btn-download-material {
+  width: 100%;
+  background: #6f42c1;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-download-material:hover {
+  background: #5a32a3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+}
+
+.btn-download-material:active {
+  transform: translateY(0);
+}
+
+.no-materials {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.no-materials p {
+  margin: 0;
+  font-size: 1rem;
+}
+
 /* Modal Responsive */
 @media (max-width: 768px) {
   .modal-content {
@@ -776,5 +912,17 @@
   .btn-download-artifact {
     width: 100%;
     justify-content: center;
+  }
+
+  .materials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .material-card {
+    padding: 1rem;
+  }
+
+  .detail-value {
+    max-width: 50%;
   }
 }
