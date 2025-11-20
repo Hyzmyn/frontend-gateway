@@ -210,18 +210,31 @@ const ManagerExams = () => {
           return acc;
         }, {});
       
+      // Convert scheduledUtc to ISO format with timezone
+      const scheduledDate = new Date(formData.scheduledUtc);
+      const scheduledUtcISO = scheduledDate.toISOString();
+      
       const payload = {
         code: formData.code,
         name: formData.name,
         subjectId: formData.subjectId,
         semesterId: formData.semesterId,
-        scheduledUtc: formData.scheduledUtc,
+        scheduledUtc: scheduledUtcISO,
         durationMinutes: parseInt(formData.durationMinutes),
-        isPublished: formData.isPublished,
+        metadata: metadataObj,
         isAnonymousGradingEnabled: formData.isAnonymousGradingEnabled,
-        gradingPolicy: formData.gradingPolicy,
-        metadata: Object.keys(metadataObj).length > 0 ? metadataObj : null
+        gradingPolicy: {
+          isDoubleMarkingEnabled: formData.gradingPolicy.isDoubleMarkingEnabled,
+          scoreVarianceThreshold: formData.gradingPolicy.scoreVarianceThreshold,
+          minimumScoreForDoubleMarking: formData.gradingPolicy.minimumScoreForDoubleMarking,
+          randomSamplingPercentage: formData.gradingPolicy.randomSamplingPercentage
+        }
       };
+      
+      // Only add isPublished if editing or explicitly set
+      if (editingExam || formData.isPublished) {
+        payload.isPublished = formData.isPublished;
+      }
       
       if (editingExam) {
         // Update existing exam
