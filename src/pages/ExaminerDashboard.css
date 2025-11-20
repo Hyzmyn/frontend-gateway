@@ -1,0 +1,224 @@
+.examiner-dashboard {
+  padding: 2rem 0;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  margin: 0 0 0.5rem 0;
+  color: #282c34;
+}
+
+.welcome-text {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Progress Cards */
+.progress-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.progress-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.progress-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+.progress-count {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #282c34;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.progress-fill.pending { background: #ffc107; }
+.progress-fill.completed { background: #28a745; }
+.progress-fill.total { background: #61dafb; }
+
+/* Dashboard Section */
+.dashboard-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.dashboard-section h2 {
+  font-size: 1.3rem;
+  color: #282c34;
+  margin-bottom: 1.5rem;
+}
+
+/* Assignments Grid */
+.assignments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.assignment-card {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.assignment-card.pending {
+  border-color: #ffc107;
+}
+
+.assignment-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.assignment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.assignment-header h3 {
+  margin: 0;
+  color: #282c34;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-badge.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.assignment-details {
+  margin-bottom: 1.5rem;
+}
+
+.assignment-details p {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+/* Completed List */
+.completed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.completed-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+}
+
+.completed-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: #282c34;
+}
+
+.completed-info p {
+  margin: 0;
+  color: #666;
+}
+
+.completed-info strong {
+  color: #28a745;
+}
+
+/* Guidelines */
+.guidelines-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.guideline-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.guideline-icon {
+  width: 40px;
+  height: 40px;
+  background: #61dafb;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.guideline-content h4 {
+  margin: 0 0 0.25rem 0;
+  color: #282c34;
+}
+
+.guideline-content p {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .progress-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .assignments-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .completed-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}

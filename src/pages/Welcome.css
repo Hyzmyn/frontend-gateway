@@ -1,0 +1,39 @@
+.welcome-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.welcome-container {
+  text-align: center;
+  max-width: 500px;
+  padding: 3rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-title {
+  font-size: 2.5rem;
+  color: #282c34;
+  margin-bottom: 1rem;
+}
+
+.welcome-subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 3rem;
+}
+
+.welcome-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.welcome-buttons button {
+  min-width: 150px;
+  font-size: 1.1rem;
+  padding: 1rem 2rem;
+}

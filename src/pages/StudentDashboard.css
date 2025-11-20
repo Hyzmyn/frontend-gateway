@@ -1,0 +1,205 @@
+.student-dashboard {
+  padding: 2rem 0;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  margin: 0 0 0.5rem 0;
+  color: #282c34;
+}
+
+.welcome-text {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Info Card */
+.info-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.info-section h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.info-section p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.badge.active {
+  background: #28a745;
+  color: white;
+}
+
+.score-highlight {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+/* Dashboard Section */
+.dashboard-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.dashboard-section h2 {
+  font-size: 1.3rem;
+  color: #282c34;
+  margin-bottom: 1.5rem;
+}
+
+/* Exams List */
+.exams-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.exam-card {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.exam-card.status-graded {
+  border-color: #28a745;
+}
+
+.exam-card.status-pending {
+  border-color: #ffc107;
+}
+
+.exam-card.status-upcoming {
+  border-color: #61dafb;
+}
+
+.exam-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.exam-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.exam-header h3 {
+  margin: 0;
+  color: #282c34;
+}
+
+.exam-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.exam-status.graded {
+  background: #d4edda;
+  color: #155724;
+}
+
+.exam-status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.exam-status.upcoming {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.exam-details {
+  margin-bottom: 1.5rem;
+}
+
+.exam-details p {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+.exam-details .score {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #28a745;
+}
+
+.exam-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Quick Links */
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.quick-link-btn {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: left;
+}
+
+.quick-link-btn:hover {
+  background: #61dafb;
+  color: white;
+  border-color: #61dafb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(97, 218, 251, 0.3);
+}
+
+@media (max-width: 768px) {
+  .info-card {
+    grid-template-columns: 1fr;
+  }
+  
+  .exams-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .quick-links {
+    grid-template-columns: 1fr;
+  }
+  
+  .exam-actions {
+    flex-direction: column;
+  }
+}
