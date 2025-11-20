@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { Button, Loading } from '../components/common';
 import toast from 'react-hot-toast';
 import './ExaminerDashboard.css';
+
+const EXAMS_API_URL = 'https://exams-service.onrender.com';
 
 const ExaminerDashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [assignments, setAssignments] = useState([
-    { id: 1, student: 'STU001', exam: 'CS-101', status: 'pending', dueDate: '2025-11-25' },
-    { id: 2, student: 'STU002', exam: 'CS-101', status: 'pending', dueDate: '2025-11-25' },
-    { id: 3, student: 'STU003', exam: 'CS-102', status: 'graded', score: 88, dueDate: '2025-11-23' }
-  ]);
+  const [exams, setExams] = useState([]);
+  const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
     const userStr = localStorage.getItem('user');
@@ -25,19 +26,70 @@ const ExaminerDashboard = () => {
     }
 
     setUser(currentUser);
-    setLoading(false);
+    
+    // Decode token to get email
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const email = decoded.email || decoded.sub || decoded.unique_name || '';
+        setUserEmail(email);
+        fetchExams(email);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        toast.error('Invalid token');
+        setLoading(false);
+      }
+    } else {
+      setLoading(false);
+    }
   }, [navigate]);
 
-  const handleStartGrading = (id) => {
-    toast.info('Opening grading interface...');
+  const fetchExams = async (email) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${EXAMS_API_URL}/exams`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      // Filter exams where the examiner's email matches
+      const filteredExams = response.data.filter(exam => {
+        // Check if exam has examiners array and email matches
+        if (exam.examiners && Array.isArray(exam.examiners)) {
+          return exam.examiners.some(examiner => 
+            examiner.email && examiner.email.toLowerCase() === email.toLowerCase()
+          );
+        }
+        // Check if exam has examinerEmail field
+        if (exam.examinerEmail) {
+          return exam.examinerEmail.toLowerCase() === email.toLowerCase();
+        }
+        return false;
+      });
+      
+      setExams(filteredExams);
+    } catch (error) {
+      console.error('Error fetching exams:', error);
+      toast.error('Failed to load exams');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleViewExam = (examId) => {
+    toast.info(`Opening exam ${examId}...`);
+    // Navigate to exam details or grading interface
   };
 
   if (loading) {
     return <Loading message="Loading examiner dashboard..." />;
   }
 
-  const pendingCount = assignments.filter(a => a.status === 'pending').length;
-  const gradedCount = assignments.filter(a => a.status === 'graded').length;
+  const publishedExams = exams.filter(e => e.isPublished).length;
+  const draftExams = exams.filter(e => !e.isPublished).length;
 
   return (
     <div className="examiner-dashboard">
@@ -45,41 +97,45 @@ const ExaminerDashboard = () => {
         <div>
           <h1>Examiner Dashboard</h1>
           <p className="welcome-text">Welcome back, {user?.fullName || user?.username}!</p>
+          <p className="email-text">📧 {userEmail}</p>
         </div>
+        <Button variant="primary" onClick={() => navigate('/examiner/manage')}>
+          📋 Manage Student Exams
+        </Button>
       </div>
 
-      {/* Progress Cards */}
+      {/* Statistics Cards */}
       <div className="progress-cards">
         <div className="progress-card">
           <div className="progress-header">
-            <h3>📝 Pending Grading</h3>
-            <span className="progress-count">{pendingCount}</span>
-          </div>
-          <div className="progress-bar">
-            <div 
-              className="progress-fill pending"
-              style={{ width: `${(pendingCount / assignments.length) * 100}%` }}
-            ></div>
-          </div>
-        </div>
-
-        <div className="progress-card">
-          <div className="progress-header">
-            <h3>✅ Completed</h3>
-            <span className="progress-count">{gradedCount}</span>
+            <h3>📝 Published Exams</h3>
+            <span className="progress-count">{publishedExams}</span>
           </div>
           <div className="progress-bar">
             <div 
               className="progress-fill completed"
-              style={{ width: `${(gradedCount / assignments.length) * 100}%` }}
+              style={{ width: exams.length > 0 ? `${(publishedExams / exams.length) * 100}%` : '0%' }}
             ></div>
           </div>
         </div>
 
         <div className="progress-card">
           <div className="progress-header">
-            <h3>📊 Total Assigned</h3>
-            <span className="progress-count">{assignments.length}</span>
+            <h3>📄 Draft Exams</h3>
+            <span className="progress-count">{draftExams}</span>
+          </div>
+          <div className="progress-bar">
+            <div 
+              className="progress-fill pending"
+              style={{ width: exams.length > 0 ? `${(draftExams / exams.length) * 100}%` : '0%' }}
+            ></div>
+          </div>
+        </div>
+
+        <div className="progress-card">
+          <div className="progress-header">
+            <h3>📊 Total Exams</h3>
+            <span className="progress-count">{exams.length}</span>
           </div>
           <div className="progress-bar">
             <div 
@@ -90,52 +146,61 @@ const ExaminerDashboard = () => {
         </div>
       </div>
 
-      {/* Pending Assignments */}
+      {/* My Exams List */}
       <div className="dashboard-section">
-        <h2>⏳ Pending Assignments</h2>
-        <div className="assignments-grid">
-          {assignments.filter(a => a.status === 'pending').map(assignment => (
-            <div key={assignment.id} className="assignment-card pending">
-              <div className="assignment-header">
-                <h3>{assignment.exam}</h3>
-                <span className="status-badge pending">Pending</span>
-              </div>
-              <div className="assignment-details">
-                <p><strong>Student:</strong> {assignment.student}</p>
-                <p><strong>Due Date:</strong> {new Date(assignment.dueDate).toLocaleDateString('vi-VN')}</p>
-              </div>
-              <Button 
-                variant="primary" 
-                fullWidth
-                onClick={() => handleStartGrading(assignment.id)}
-              >
-                Start Grading
-              </Button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Completed Assignments */}
-      <div className="dashboard-section">
-        <h2>✅ Completed Grading</h2>
-        <div className="completed-list">
-          {assignments.filter(a => a.status === 'graded').map(assignment => (
-            <div key={assignment.id} className="completed-item">
-              <div className="completed-info">
-                <h4>{assignment.student} - {assignment.exam}</h4>
-                <p>Score: <strong>{assignment.score}/100</strong></p>
-              </div>
-              <div className="completed-actions">
-                <Button 
-                  variant="secondary" 
-                  onClick={() => toast.info('Viewing submission...')}
-                >
-                  View Details
-                </Button>
-              </div>
-            </div>
-          ))}
+        <h2>📋 My Assigned Exams</h2>
+        <div className="table-container">
+          <table className="exams-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Schedule</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Anonymous</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {exams.map((exam) => (
+                <tr key={exam.id}>
+                  <td><strong>{exam.code}</strong></td>
+                  <td>{exam.name}</td>
+                  <td>{exam.scheduledUtc ? new Date(exam.scheduledUtc).toLocaleString('vi-VN') : 'N/A'}</td>
+                  <td>{exam.durationMinutes} min</td>
+                  <td>
+                    <span className={`status-badge ${exam.isPublished ? 'published' : 'draft'}`}>
+                      {exam.isPublished ? '✓ Published' : '📝 Draft'}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`status-badge ${exam.isAnonymousGradingEnabled ? 'anonymous' : 'identified'}`}>
+                      {exam.isAnonymousGradingEnabled ? '👤 Anonymous' : '👁️ Identified'}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="action-buttons">
+                      <button 
+                        className="btn-icon btn-view" 
+                        onClick={() => handleViewExam(exam.id)}
+                        title="View Exam"
+                      >
+                        👁️
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {exams.length === 0 && (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>
+                    No exams assigned to you yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

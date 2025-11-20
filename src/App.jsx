@@ -15,6 +15,7 @@ import {
   ManagerExams,
   ModeratorDashboard,
   ExaminerDashboard,
+  ExaminerManage,
   StudentDashboard
 } from './pages';
 import './App.css';
@@ -59,6 +60,7 @@ function App() {
             <Route path="/manager/exams" element={<ManagerExams />} />
             <Route path="/moderator" element={<ModeratorDashboard />} />
             <Route path="/examiner" element={<ExaminerDashboard />} />
+            <Route path="/examiner/manage" element={<ExaminerManage />} />
             <Route path="/student" element={<StudentDashboard />} />
           </Routes>
         </Layout>

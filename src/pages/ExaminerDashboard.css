@@ -16,6 +16,13 @@
   font-size: 1.1rem;
 }
 
+.email-text {
+  color: #61dafb;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
 /* Progress Cards */
 .progress-cards {
   display: grid;
@@ -128,6 +135,26 @@
   color: #856404;
 }
 
+.status-badge.published {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge.draft {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.status-badge.anonymous {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+.status-badge.identified {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
 .assignment-details {
   margin-bottom: 1.5rem;
 }
@@ -205,6 +232,56 @@
   margin: 0;
   color: #666;
   font-size: 0.95rem;
+}
+
+/* Table Styles */
+.table-container {
+  overflow-x: auto;
+}
+
+.exams-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.exams-table th,
+.exams-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.exams-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #282c34;
+}
+
+.exams-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.25rem 0.5rem;
+  transition: transform 0.2s;
+}
+
+.btn-icon:hover {
+  transform: scale(1.2);
+}
+
+.btn-icon.btn-view {
+  color: #007bff;
 }
 
 @media (max-width: 768px) {

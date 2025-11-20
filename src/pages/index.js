@@ -11,4 +11,5 @@ export { default as ManagerSemesters } from './ManagerSemesters';
 export { default as ManagerExams } from './ManagerExams';
 export { default as ModeratorDashboard } from './ModeratorDashboard';
 export { default as ExaminerDashboard } from './ExaminerDashboard';
+export { default as ExaminerManage } from './ExaminerManage';
 export { default as StudentDashboard } from './StudentDashboard';
