@@ -169,6 +169,73 @@ const ExaminerManage = () => {
     return classMap[status] || 'pending';
   };
 
+  const handleDownloadArtifact = async (artifactId, submission) => {
+    try {
+      const token = localStorage.getItem('token');
+      toast.loading('Downloading file...', { id: 'download' });
+      
+      const response = await axios.get(
+        `${SUBMISSIONS_API_URL}/submissions/files/artifacts/${artifactId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          responseType: 'blob' // Important for file download
+        }
+      );
+      
+      // Get filename from Content-Disposition header or use default
+      const contentDisposition = response.headers['content-disposition'];
+      let filename = `artifact_${artifactId}`;
+      
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (filenameMatch && filenameMatch[1]) {
+          filename = filenameMatch[1].replace(/['"]/g, '');
+        }
+      } else {
+        // Try to get extension from content-type
+        const contentType = response.headers['content-type'];
+        if (contentType) {
+          if (contentType.includes('pdf')) filename += '.pdf';
+          else if (contentType.includes('word')) filename += '.docx';
+          else if (contentType.includes('zip')) filename += '.zip';
+          else if (contentType.includes('image')) filename += '.jpg';
+        }
+      }
+      
+      // Create blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('File downloaded successfully!', { id: 'download' });
+    } catch (error) {
+      console.error('Error downloading artifact:', error);
+      toast.error('Failed to download file', { id: 'download' });
+    }
+  };
+
+  const handleDownloadAllArtifacts = async (submission) => {
+    if (!submission.artifacts || submission.artifacts.length === 0) {
+      toast.error('No artifacts to download');
+      return;
+    }
+    
+    toast.info(`Downloading ${submission.artifacts.length} file(s)...`);
+    
+    for (const artifact of submission.artifacts) {
+      await handleDownloadArtifact(artifact.id, submission);
+      // Small delay between downloads
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+  };
+
   const getStatusBadge = (assignment) => {
     if (assignment.isLead) {
       return <span className="status-badge lead">👑 Lead Grader</span>;
@@ -427,66 +494,130 @@ const ExaminerManage = () => {
                 <div className="submissions-list">
                   <h3>📝 Submissions ({selectedSubmissions.length})</h3>
                   {selectedSubmissions.length > 0 ? (
-                    <div className="table-container">
-                      <table className="submissions-table">
-                        <thead>
-                          <tr>
-                            <th>Student Code</th>
-                            <th>Status</th>
-                            <th>Attempt</th>
-                            <th>Score</th>
-                            <th>Uploaded</th>
-                            <th>Violations</th>
-                            <th>Artifacts</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {selectedSubmissions.map((submission) => (
-                            <tr key={submission.id}>
-                              <td><strong>{submission.studentCode}</strong></td>
-                              <td>
-                                <span className={`status-badge ${getStatusClass(submission.status)}`}>
-                                  {getStatusLabel(submission.status)}
-                                </span>
-                              </td>
-                              <td>{submission.attempt}</td>
-                              <td>
-                                {submission.score !== null && submission.score !== undefined
-                                  ? <span className="score">{submission.score}</span>
-                                  : '-'
-                                }
-                              </td>
-                              <td>
-                                {submission.uploadedUtc 
-                                  ? new Date(submission.uploadedUtc).toLocaleString('vi-VN')
-                                  : '-'
-                                }
-                              </td>
-                              <td>
-                                <span className={`violations-badge ${submission.violations?.length > 0 ? 'has-violations' : ''}`}>
-                                  {submission.violations?.length || 0}
-                                </span>
-                              </td>
-                              <td>
-                                <span className="artifacts-badge">
-                                  {submission.artifacts?.length || 0}
-                                </span>
-                              </td>
-                              <td>
-                                <button 
-                                  className="btn-icon btn-grade" 
-                                  onClick={() => toast.info(`Grade submission ${submission.id}`)}
-                                  title="Grade Submission"
-                                >
-                                  📝
-                                </button>
-                              </td>
+                    <>
+                      <div className="table-container">
+                        <table className="submissions-table">
+                          <thead>
+                            <tr>
+                              <th>Student Code</th>
+                              <th>Status</th>
+                              <th>Attempt</th>
+                              <th>Score</th>
+                              <th>Uploaded</th>
+                              <th>Violations</th>
+                              <th>Artifacts</th>
+                              <th>Actions</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                          </thead>
+                          <tbody>
+                            {selectedSubmissions.map((submission) => (
+                              <tr key={submission.id}>
+                                <td><strong>{submission.studentCode}</strong></td>
+                                <td>
+                                  <span className={`status-badge ${getStatusClass(submission.status)}`}>
+                                    {getStatusLabel(submission.status)}
+                                  </span>
+                                </td>
+                                <td>{submission.attempt}</td>
+                                <td>
+                                  {submission.score !== null && submission.score !== undefined
+                                    ? <span className="score">{submission.score}</span>
+                                    : '-'
+                                  }
+                                </td>
+                                <td>
+                                  {submission.uploadedUtc 
+                                    ? new Date(submission.uploadedUtc).toLocaleString('vi-VN')
+                                    : '-'
+                                  }
+                                </td>
+                                <td>
+                                  <span className={`violations-badge ${submission.violations?.length > 0 ? 'has-violations' : ''}`}>
+                                    {submission.violations?.length || 0}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="artifacts-badge">
+                                    {submission.artifacts?.length || 0}
+                                  </span>
+                                </td>
+                                <td>
+                                  <div className="action-buttons">
+                                    {submission.artifacts && submission.artifacts.length > 0 ? (
+                                      <>
+                                        <button 
+                                          className="btn-icon btn-download" 
+                                          onClick={() => handleDownloadAllArtifacts(submission)}
+                                          title="Download All Files"
+                                        >
+                                          📥
+                                        </button>
+                                        <button 
+                                          className="btn-icon btn-grade" 
+                                          onClick={() => handleDownloadArtifact(submission.artifacts[0].id, submission)}
+                                          title="Download First File"
+                                        >
+                                          📄
+                                        </button>
+                                      </>
+                                    ) : (
+                                      <span className="no-files-text">No files</span>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Artifacts Detail Section */}
+                      <div className="artifacts-detail-section">
+                        <h3>📎 Files Detail</h3>
+                        {selectedSubmissions.map((submission) => (
+                          submission.artifacts && submission.artifacts.length > 0 && (
+                            <div key={submission.id} className="submission-artifacts">
+                              <div className="submission-header-mini">
+                                <strong>Student: {submission.studentCode}</strong>
+                                <span className="artifact-count">{submission.artifacts.length} file(s)</span>
+                              </div>
+                              <div className="artifacts-grid">
+                                {submission.artifacts.map((artifact) => (
+                                  <div key={artifact.id} className="artifact-card">
+                                    <div className="artifact-info">
+                                      <div className="artifact-icon">
+                                        {artifact.artifactType === 'Submission' ? '📄' : '📎'}
+                                      </div>
+                                      <div className="artifact-details">
+                                        <div className="artifact-type">{artifact.artifactType}</div>
+                                        <div className="artifact-size">
+                                          {artifact.sizeBytes 
+                                            ? `${(artifact.sizeBytes / 1024).toFixed(2)} KB`
+                                            : 'Unknown size'
+                                          }
+                                        </div>
+                                        {artifact.path && (
+                                          <div className="artifact-path" title={artifact.path}>
+                                            {artifact.path.split('/').pop()}
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <button 
+                                      className="btn-download-artifact"
+                                      onClick={() => handleDownloadArtifact(artifact.id, submission)}
+                                      title="Download File"
+                                    >
+                                      <span>📥 Download</span>
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )
+                        ))}
+                      </div>
+                    </>
                   ) : (
                     <div className="no-submissions">
                       <p>No submissions found for this exam.</p>
