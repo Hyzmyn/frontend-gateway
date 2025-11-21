@@ -1,175 +1,185 @@
 .student-dashboard {
-    padding: 2rem 0;
+    padding: 0.25rem 0;
 }
 
 .dashboard-header {
-    margin-bottom: 2rem;
+    margin-bottom: 0.75rem;
 }
 
 .dashboard-header h1 {
-    margin: 0 0 0.5rem 0;
-    color: var(--md-on-surface);
+    margin: 0;
+    color: var(--md-sys-color-on-surface);
+    font-size: 1.25rem;
 }
 
 .welcome-text {
-    color: var(--md-muted);
-    font-size: 1.1rem;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.85rem;
 }
 
 /* Info Card */
 .info-card {
-    background: var(--md-surface-variant);
-    color: var(--md-on-surface);
-    padding: 2rem;
-    border-radius: 12px;
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    padding: 0.75rem;
+    border-radius: var(--md-radius);
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    border: none;
+    box-shadow: none;
 }
 
 .info-section h3 {
-    margin: 0 0 1rem 0;
-    font-size: 1.1rem;
+    margin: 0 0 0.15rem 0;
+    font-size: 0.8rem;
+    opacity: 0.8;
 }
 
 .info-section p {
-    margin: 0.5rem 0;
+    margin: 0;
     font-size: 0.95rem;
+    font-weight: 600;
 }
 
 .badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.85rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
     font-weight: 500;
-    background: var(--md-surface);
-    color: var(--md-on-surface);
-}
-
-.badge.active {
-    background: var(--md-surface);
-    color: var(--md-on-surface);
+    background: rgba(255, 255, 255, 0.3);
+    color: inherit;
+    display: inline-block;
 }
 
 .score-highlight {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: var(--md-on-surface);
+    font-size: 1.1rem;
+    font-weight: 700;
 }
 
 /* Dashboard Section */
 .dashboard-section {
-    background: var(--md-surface);
-    padding: 1.75rem;
+    background: var(--md-sys-color-surface-container-low);
+    padding: 0.75rem;
     border-radius: var(--md-radius);
-    border: 1px solid var(--md-outline-variant);
-    margin-bottom: 2rem;
+    margin-bottom: 0.75rem;
+    border: none;
+    box-shadow: none;
 }
 
 .dashboard-section h2 {
-    font-size: 1.3rem;
-    color: var(--md-on-surface);
-    margin-bottom: 1.2rem;
+    font-size: 1rem;
+    color: var(--md-sys-color-on-surface);
+    margin-bottom: 0.5rem;
 }
 
 /* Exams List */
 .exams-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0.5rem;
 }
 
 .exam-card {
-    border: 1px solid var(--md-outline);
+    border: none;
+    box-shadow: none;
     border-radius: var(--md-radius);
-    padding: 1.5rem;
-    background: var(--md-surface);
+    padding: 0.75rem;
+    background: var(--md-sys-color-surface-container);
+    /* No transition, no hover scale */
 }
 
-.exam-card.status-graded {
-    border-color: var(--md-outline);
-}
-
-.exam-card.status-pending {
-    border-color: var(--md-outline);
-}
-
-.exam-card.status-upcoming {
-    border-color: var(--md-outline);
+.exam-card:hover {
+    background: var(--md-sys-color-surface-container-high);
+    /* Color change only */
 }
 
 .exam-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--md-outline-variant);
+    align-items: flex-start;
+    margin-bottom: 0.35rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .exam-header h3 {
     margin: 0;
-    color: var(--md-on-surface);
+    color: var(--md-sys-color-on-surface);
+    font-size: 0.95rem;
 }
 
 .exam-status {
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    background: var(--md-surface-variant);
-    color: var(--md-on-surface);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
 .exam-status.graded {
-    background: #e9e8e4;
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
 }
 
 .exam-status.pending {
-    background: #efeeea;
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
 }
 
 .exam-status.upcoming {
-    background: #e4e3df;
+    background: var(--md-sys-color-surface-container-highest);
+    color: var(--md-sys-color-on-surface);
 }
 
 .exam-details {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .exam-details p {
-    margin: 0.5rem 0;
-    color: var(--md-muted);
+    margin: 0.15rem 0;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
 }
 
 .exam-details .score {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--md-on-surface);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--md-sys-color-primary);
 }
 
 .exam-actions {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.35rem;
     flex-wrap: wrap;
 }
 
 /* Quick Links */
 .quick-links {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.35rem;
 }
 
 .quick-link-btn {
-    background: var(--md-surface);
-    border: 1px solid var(--md-outline);
-    padding: 1rem;
+    background: var(--md-sys-color-surface-container);
+    border: none;
+    box-shadow: none;
+    padding: 0.5rem;
     border-radius: var(--md-radius);
-    font-size: 1rem;
+    font-size: 0.85rem;
     cursor: pointer;
     text-align: left;
+    color: var(--md-sys-color-on-surface);
+    font-weight: 500;
+}
+
+.quick-link-btn:hover {
+    background: var(--md-sys-color-surface-container-high);
 }
 
 @media (max-width: 768px) {

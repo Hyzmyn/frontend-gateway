@@ -1,16 +1,60 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap");
 
 :root {
-    --md-surface: #f5f4f2;
-    --md-surface-variant: #eceae6;
-    --md-surface-contrast: #e2e0dd;
-    --md-primary: #1f1f1f;
-    --md-on-surface: #141414;
-    --md-muted: #4a4a4d;
-    --md-outline: #c9c7c2;
-    --md-outline-variant: #d7d5d0;
-    --md-radius: 16px;
-    line-height: 1.6;
+    /* Material 3 inspired soft teal palette */
+    --md-sys-color-primary: #0f766e;
+    --md-sys-color-on-primary: #ffffff;
+    --md-sys-color-primary-container: #b5efe7;
+    --md-sys-color-on-primary-container: #042f2c;
+
+    --md-sys-color-secondary: #3f5a54;
+    --md-sys-color-on-secondary: #f3faf8;
+    --md-sys-color-secondary-container: #d7e7e3;
+    --md-sys-color-on-secondary-container: #1b2f2b;
+
+    --md-sys-color-tertiary: #3c556d;
+    --md-sys-color-on-tertiary: #f4f8fb;
+    --md-sys-color-tertiary-container: #d3e3f6;
+    --md-sys-color-on-tertiary-container: #182b3a;
+
+    --md-sys-color-error: #ba1a1a;
+    --md-sys-color-on-error: #ffffff;
+    --md-sys-color-error-container: #ffdad6;
+    --md-sys-color-on-error-container: #410002;
+
+    --md-sys-color-background: #f6f8f7;
+    --md-sys-color-on-background: #111514;
+
+    --md-sys-color-surface: #f6f8f7;
+    --md-sys-color-on-surface: #111514;
+
+    /* Tonal Surfaces */
+    --md-sys-color-surface-container-lowest: #eef2f1;
+    --md-sys-color-surface-container-low: #e7edeb;
+    --md-sys-color-surface-container: #e0e6e4;
+    --md-sys-color-surface-container-high: #d7dedd;
+    --md-sys-color-surface-container-highest: #cfd8d6;
+
+    --md-sys-color-outline: #6e7a77;
+    --md-sys-color-outline-variant: #c0cac7;
+
+    /* Legacy mapping for existing code compatibility */
+    --md-surface: var(--md-sys-color-background);
+    --md-surface-variant: var(--md-sys-color-surface-container-low);
+    --md-surface-contrast: var(--md-sys-color-surface-container-high);
+    --md-primary: var(--md-sys-color-primary);
+    --md-on-surface: var(--md-sys-color-on-surface);
+    --md-muted: var(--md-sys-color-outline);
+    --md-outline: var(--md-sys-color-outline-variant);
+    --md-outline-variant: var(--md-sys-color-surface-container-highest);
+
+    /* Spacing & Radius - compact with generous curves */
+    --md-radius: 14px;
+    --md-radius-small: 10px;
+    --md-spacing-compact: 4px;
+    --md-spacing-normal: 10px;
+
+    line-height: 1.3;
     font-weight: 400;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -27,9 +71,13 @@
 body {
     margin: 0;
     min-height: 100vh;
-    background-color: var(--md-surface);
-    color: var(--md-on-surface);
-    font-family: "Manrope", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
+    font-family:
+        "Manrope",
+        system-ui,
+        -apple-system,
+        sans-serif;
 }
 
 a {
@@ -37,10 +85,8 @@ a {
     text-decoration: none;
 }
 
-a:hover {
-    color: inherit;
-}
-
 button {
     font-family: inherit;
+    border: none;
+    /* Default no border */
 }

@@ -1,18 +1,18 @@
 .footer {
-    background-color: var(--md-surface-variant);
-    padding: 1.25rem 1.5rem;
+    background-color: var(--md-sys-color-surface-container);
+    padding: 0.85rem 1.25rem;
     color: var(--md-muted);
     margin-top: auto;
-    border-top: 1px solid var(--md-outline);
 }
 
 .footer-container {
-    max-width: 1200px;
+    max-width: 1140px;
     margin: 0 auto;
     text-align: center;
 }
 
 .footer-container p {
     margin: 0;
-    font-size: 0.92rem;
+    font-size: 0.88rem;
+    letter-spacing: 0.01em;
 }

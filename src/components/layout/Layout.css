@@ -3,15 +3,15 @@
     flex-direction: column;
     min-height: 100vh;
     background: linear-gradient(
-        120deg,
-        var(--md-surface) 0%,
-        var(--md-surface-variant) 100%
+        135deg,
+        var(--md-sys-color-surface) 0%,
+        var(--md-sys-color-surface-container-low) 100%
     );
 }
 
 .main-content {
     flex: 1;
-    width: min(1180px, calc(100% - 3rem));
+    width: min(1140px, calc(100% - 2.5rem));
     margin: 0 auto;
-    padding: 2.5rem 0 3rem;
+    padding: 1.75rem 0 2.5rem;
 }
